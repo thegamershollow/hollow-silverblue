@@ -1,45 +1,83 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
-name: hollow-silverblue
-# description will be included in the image's metadata
-description: This is my personal OS image.
-
-# the base image to build on top of (FROM) and the version tag to use
+name: hollow-custom
+description: A custom fedora silverblue image using bluebuild for my personal use case
 base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 42 # latest is also supported if you want new updates ASAP
-
-# module configuration, executed in order
-# you can include multiple instances of the same module
+image-version: 43
+platforms:
+  - linux/amd64
 modules:
   - type: files
     files:
       - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+        destination: /
 
   - type: dnf
     repos:
+      files:
+        - https://pkgs.tailscale.com/stable/fedora/tailscale.repo
       copr:
-        - atim/starship
+        - crashdummy/Displaylink
     install:
       packages:
-        - micro
-        - starship
+        - fzf
+        - zsh
+        - ruby
+        - ruby-devel
+        - hyfetch
+        - fastfetch
+        - tailscale
+        - gnome-firmware
+        - mediawriter
+        - cpu-x
+        - brasero
     remove:
       packages:
-        # example: removing firefox (in favor of the flatpak)
-        # "firefox" is the main package, "firefox-langpacks" is a dependency
         - firefox
-        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+        - firefox-langpacks
+
+  - type: script
+    snippets:
+      - |
+        systemctl enable tailscaled.service
+        dnf5 copr enable -y crashdummy/Displaylink
+        dnf5 install -y --setopt=install_weak_deps=False displaylink --setopt=tsflags=noscripts
+        systemctl enable displaylink.service
+      - |
+        sudo dnf5 install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 
   - type: default-flatpaks
     configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
+      - notify: false
         scope: system
-        # If no repo information is specified, Flathub will be used by default
-        install: # system flatpaks we want all users to have and not remove
-          - org.mozilla.firefox
-          - org.gnome.Loupe
-      - scope: user # Also add Flathub user repo, but no user packages
 
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+        remotes:
+          - name: flathub
+            url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+          - name: fedora
+            url: https://registry.fedoraproject.org
+            type: oci
+            gpg-verify: false
+
+        install:
+          - com.discordapp.Discord
+          - com.github.tchx84.Flatseal
+          - it.mijorus.gearlever
+          - com.usebottles.bottles
+          - org.gnome.Weather
+          - org.gnome.TextEditor
+          - org.gnome.NautilusPreviewer
+          - org.gnome.Calculator
+          - org.gnome.Characters
+          - org.gnome.Contacts
+          - org.gnome.Logs
+          - org.gnome.Loupe
+          - org.gnome.Maps
+          - org.gnome.Papers
+          - org.gnome.baobab
+          - org.gnome.Snapshot
+          - org.gnome.font-viewer
+          - org.gnome.clocks
+          - org.gnome.Extensions
+  - type: signing
