@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-name: hollow-custom
-description: A custom fedora silverblue image using bluebuild for my personal use case
+name: hollow-silverblue
+description: A custom fedora atomic distro based on silverblue for my laptop
 base-image: ghcr.io/ublue-os/silverblue-main
 image-version: 43
 platforms:
