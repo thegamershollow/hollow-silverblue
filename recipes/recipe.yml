@@ -34,8 +34,6 @@ modules:
         - mediawriter
         - cpu-x
         - brasero
-        - displaylink
-        - google-chrome-stable
 
     remove:
       packages:
@@ -45,8 +43,11 @@ modules:
   - type: script
     snippets:
       - systemctl enable tailscaled.service
-      - systemctl enable displaylink.service
+      - dnf5 install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+      - dnf5 install -y @development-tools
       - gem install colorls
+      - dnf5 remove -y @development-tools
+      - dnf5 install -y google-chrome-stable
 
   - type: default-flatpaks
     configurations:
