@@ -38,17 +38,14 @@ modules:
 
   - type: script
     snippets:
-      - |
-        systemctl enable tailscaled.service
-        dnf5 copr enable -y crashdummy/Displaylink
-        dnf5 install -y --setopt=install_weak_deps=False displaylink --setopt=tsflags=noscripts
-        systemctl enable displaylink.service
-      - |
-      	sudo dnf5 install -y @development-tools
-      	sudo gem install colorls
-      	sudo dnf5 remove -y @development-tools
-      - |
-        sudo dnf5 install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+      - systemctl enable tailscaled.service
+      - dnf5 copr enable -y crashdummy/Displaylink 
+      - dnf5 install -y --setopt=install_weak_deps=False displaylink --setopt=tsflags=noscripts
+      - systemctl enable displaylink.service
+      - sudo dnf5 install -y @development-tools
+      - sudo gem install colorls
+      - sudo dnf5 remove -y @development-tools
+      - sudo dnf5 install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 
   - type: default-flatpaks
     configurations:
