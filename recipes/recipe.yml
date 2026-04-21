@@ -4,8 +4,10 @@ name: hollow-silverblue
 description: A custom fedora atomic distro based on silverblue for my laptop
 base-image: ghcr.io/ublue-os/silverblue-main
 image-version: 43
+
 platforms:
   - linux/amd64
+
 modules:
   - type: files
     files:
@@ -18,6 +20,7 @@ modules:
         - https://pkgs.tailscale.com/stable/fedora/tailscale.repo
       copr:
         - crashdummy/Displaylink
+
     install:
       packages:
         - fzf
@@ -31,6 +34,9 @@ modules:
         - mediawriter
         - cpu-x
         - brasero
+        - displaylink
+        - google-chrome-stable
+
     remove:
       packages:
         - firefox
@@ -39,13 +45,8 @@ modules:
   - type: script
     snippets:
       - systemctl enable tailscaled.service
-      - dnf5 copr enable -y crashdummy/Displaylink 
-      - dnf5 install -y --setopt=install_weak_deps=False displaylink --setopt=tsflags=noscripts
       - systemctl enable displaylink.service
-      - sudo dnf5 install -y @development-tools
-      - sudo gem install colorls
-      - sudo dnf5 remove -y @development-tools
-      - sudo dnf5 install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+      - gem install colorls
 
   - type: default-flatpaks
     configurations:
@@ -81,4 +82,5 @@ modules:
           - org.gnome.font-viewer
           - org.gnome.clocks
           - org.gnome.Extensions
+
   - type: signing
